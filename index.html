@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>60-Day Japanese Mastery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>日本語マスター</h2>
+
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#study-plan" class="nav-link">Study Plan</a></li>
+                <li><a href="#practice" class="nav-link">Practice</a></li>
+                <li><a href="#reference" class="nav-link">Reference</a></li>
+                <li><a href="#progress" class="nav-link">Progress</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">60-Day Japanese Mastery</h1>
+                    <p class="hero-subtitle">Master Hiragana, Katakana, and foundational Japanese in 60 days</p>
+                    <p class="hero-description">
+                        Embark on an intensive 60-day journey to master the fundamentals of Japanese. 
+                        This comprehensive study plan will guide you through Hiragana, Katakana, essential vocabulary, 
+                        basic grammar, and conversational phrases. By the end of 60 days, you'll have a solid 
+                        foundation to continue your Japanese learning journey.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showSection('study-plan')">Start Learning</button>
+                        <button class="btn btn-secondary" onclick="showSection('progress')">View Progress</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="japanese-characters">
+                        <span class="char">あ</span>
+                        <span class="char">カ</span>
+                        <span class="char">漢</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Structured Learning</h3>
+                    <p>Daily tasks covering vocabulary, grammar, and writing systems</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor your daily progress and maintain study streaks</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Interactive Practice</h3>
+                    <p>Flashcards and quizzes to reinforce your learning</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>Reference Materials</h3>
+                    <p>Complete Hiragana and Katakana charts with mnemonics</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Study Plan Section -->
+        <section id="study-plan" class="section">
+            <div class="section-header">
+                <h2>60-Day Study Plan</h2>
+                <div class="study-controls">
+                    <div class="day-navigator">
+                        <input type="number" id="dayJump" min="1" max="60" placeholder="Go to day...">
+                        <button onclick="jumpToDay()">Jump</button>
+                    </div>
+                    <div class="filter-controls">
+                        <select id="progressFilter">
+                            <option value="all">All Days</option>
+                            <option value="completed">Completed</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                        <button onclick="filterDays()">Filter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="study-plan-container">
+                <div class="progress-overview">
+                    <div class="overview-card">
+                        <div class="overview-number" id="overviewCompleted">0</div>
+                        <div class="overview-label">Completed</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-number" id="overviewRemaining">60</div>
+                        <div class="overview-label">Remaining</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-number" id="overviewStreak">0</div>
+                        <div class="overview-label">Streak</div>
+                    </div>
+                </div>
+                <div class="days-grid" id="daysGrid">
+                    <!-- Days will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section id="practice" class="section">
+            <div class="section-header">
+                <h2>Practice</h2>
+                <div class="practice-controls">
+                    <select id="practiceType">
+                        <option value="hiragana">Hiragana</option>
+                        <option value="katakana">Katakana</option>
+                        <option value="vocabulary">Vocabulary</option>
+                        <option value="kanji">Basic Kanji</option>
+                        <option value="daily">Daily Content</option>
+                    </select>
+                    <select id="practiceDay" style="display:none;">
+                        <!-- Will be populated by JavaScript -->
+                    </select>
+                    <button onclick="startPractice()">Start Practice</button>
+                </div>
+            </div>
+            <div class="practice-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Cards Studied:</span>
+                    <span class="stat-value" id="cardsStudied">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Correct:</span>
+                    <span class="stat-value" id="correctAnswers">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Accuracy:</span>
+                    <span class="stat-value" id="accuracy">0%</span>
+                </div>
+            </div>
+            <div class="practice-container" id="practice-container">
+                <div class="question-counter" id="question-counter">Question 1 of 20</div>
+                
+                <div class="mcq-container">
+                    <div class="question-card" id="question-card">
+                        <div class="question-text" id="question-text">
+                            What is the reading of あ?
+                        </div>
+                        <div class="options-container" id="options-container">
+                            <!-- MCQ options will be rendered by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mcq-controls">
+                    <button id="submitBtn">Submit Answer</button>
+                    <button id="nextQuestionBtn" style="display:none;">Next Question</button>
+                    <button id="resetQuizBtn">Reset Quiz</button>
+                </div>
+                
+                <div class="score-display" id="score-display">
+                    <div class="current-score">
+                        Score: <span id="current-score">0</span>/<span id="total-questions">20</span>
+                    </div>
+                    <div class="percentage-score">
+                        <span id="percentage-score">0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reference Section -->
+        <section id="reference" class="section">
+            <div class="section-header">
+                <h2>Reference Materials</h2>
+                <div class="reference-tabs">
+                    <button class="tab-btn active" onclick="showReference('hiragana')">Hiragana</button>
+                    <button class="tab-btn" onclick="showReference('katakana')">Katakana</button>
+                    <button class="tab-btn" onclick="showReference('guides')">Guides</button>
+                </div>
+            </div>
+            <div class="reference-content">
+                <div id="hiragana-chart" class="chart-container active">
+                    <!-- Hiragana chart will be populated by JavaScript -->
+                </div>
+                <div id="katakana-chart" class="chart-container">
+                    <!-- Katakana chart will be populated by JavaScript -->
+                </div>
+                <div id="guides" class="guides-container">
+                    <div class="guide-section">
+                        <h3>Stroke Order Tips</h3>
+                        <p>Japanese characters follow specific stroke order rules. Generally, write from top to bottom and left to right.</p>
+                    </div>
+                    <div class="guide-section">
+                        <h3>Memory Techniques</h3>
+                        <p>Use mnemonics to remember characters. For example, あ (a) looks like a person with arms outstretched saying "Ah!"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress" class="section">
+            <div class="section-header">
+                <h2>Your Progress</h2>
+            </div>
+            <div class="progress-container">
+                <div class="progress-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedDays">0</div>
+                        <div class="stat-label">Days Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="currentStreak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProgress">0%</div>
+                        <div class="stat-label">Total Progress</div>
+                    </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                <div class="motivational-message" id="motivationalMessage">
+                    Start your Japanese learning journey today!
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
