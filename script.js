@@ -1595,3 +1595,127 @@ function resetQuiz() {
 }
 
 // ...existing code...
+// --- 1) Make sure we LOAD saved progress FIRST, then initialize the app ---
+document.addEventListener('DOMContentLoaded', function() {
+  // Load saved progress first so generateStudyPlan() sees the saved state
+  loadProgress();
+  initializeApp();
+});
+
+
+// --- 2) Improved loadProgress(): parse, normalize, recompute streak and update UI ---
+function loadProgress() {
+  const saved = localStorage.getItem(STORAGE_KEYS.PROGRESS);
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      // merge but prefer saved values (keep defaults for missing fields)
+      studyProgress = { ...studyProgress, ...parsed };
+    } catch (e) {
+      console.error('Failed to parse saved progress:', e);
+    }
+  }
+
+  // Normalize arrays to numbers (prevents includes() failing due to string/number mismatch)
+  studyProgress.completedDays = Array.isArray(studyProgress.completedDays)
+    ? studyProgress.completedDays.map(Number)
+    : [];
+  studyProgress.practiceAvailableDays = Array.isArray(studyProgress.practiceAvailableDays)
+    ? studyProgress.practiceAvailableDays.map(Number)
+    : [];
+  studyProgress.dayPracticeScores = studyProgress.dayPracticeScores || {};
+  studyProgress.practiceStats = studyProgress.practiceStats || {
+    flashcardsCorrect: 0,
+    flashcardsIncorrect: 0,
+    totalPracticeTime: 0
+  };
+
+  // Recompute streak (this function also saves LAST_STUDY)
+  updateStreak();
+
+  // When initializeApp() runs it will call generateStudyPlan() and other UI setup,
+  // but ensure the basic overview is correct now:
+  updateProgressDisplay();
+  updateProgressOverview();
+}
+
+// --- 3) Make updateDayCard toggle disabled state + text so UI matches saved state ---
+function updateDayCard(day) {
+  const completedDays = getCompletedDays();
+  const dayCards = document.querySelectorAll('.day-card');
+  const dayCard = dayCards[day - 1];
+  if (!dayCard) return;
+
+  const completeBtn = dayCard.querySelector('.complete-btn');
+
+  if (completedDays.includes(Number(day))) {
+    dayCard.classList.add('completed');
+    if (completeBtn) {
+      completeBtn.classList.add('completed');
+      completeBtn.textContent = 'Completed';
+      completeBtn.disabled = true;
+    }
+  } else {
+    dayCard.classList.remove('completed');
+    if (completeBtn) {
+      completeBtn.classList.remove('completed');
+      completeBtn.textContent = 'Mark Complete';
+      completeBtn.disabled = false;
+    }
+  }
+}
+
+// --- 4) Small improvement to toggleDayCompletion to normalize day and avoid duplicates ---
+function toggleDayCompletion(day) {
+  day = Number(day);
+  const dayIndex = studyProgress.completedDays.indexOf(day);
+
+  if (dayIndex > -1) {
+    // unmark
+    studyProgress.completedDays.splice(dayIndex, 1);
+  } else {
+    // mark complete (avoid duplicates)
+    if (!studyProgress.completedDays.includes(day)) {
+      studyProgress.completedDays.push(day);
+    }
+    if (!studyProgress.practiceAvailableDays.includes(day)) {
+      studyProgress.practiceAvailableDays.push(day);
+    }
+    updateStreak();
+  }
+
+  saveProgress();
+  updateDayCard(day);
+  updateProgressDisplay();
+  updateProgressOverview();
+}
+// After generating all day cards, reapply saved progress
+const savedProgress = JSON.parse(localStorage.getItem("progress")) || {};
+Object.keys(savedProgress).forEach(day => {
+  if (savedProgress[day]) {
+    updateDayCard(Number(day));
+  }
+});
+function updateDayCard(day) {
+  const dayCards = document.querySelectorAll('.day-card');
+  const dayCard = dayCards[day - 1];
+  if (!dayCard) return;
+
+  const completeBtn = dayCard.querySelector('.complete-btn');
+
+  if (getCompletedDays().includes(day)) {
+    dayCard.classList.add('completed');
+    if (completeBtn) {
+      completeBtn.classList.add('completed');
+      completeBtn.textContent = 'Completed';
+      completeBtn.disabled = true;
+    }
+  } else {
+    dayCard.classList.remove('completed');
+    if (completeBtn) {
+      completeBtn.classList.remove('completed');
+      completeBtn.textContent = 'Mark Complete';
+      completeBtn.disabled = false;
+    }
+  }
+}
